@@ -1,13 +1,22 @@
 import { Modal } from './UI/Modal';
+import { Map } from './UI/Map';
 
 class PlaceFinder {
   constructor() {
     const addressForm = document.querySelector("form");
     const locateUserBtn = document.getElementById("locate-btn");
 
-    locateUserBtn.addEventListener("click", this.locateUserHandler);
+    locateUserBtn.addEventListener("click", this.locateUserHandler.bind(this));
     addressForm.addEventListener("submit", this.findAddressHandler);
-  }
+	}
+	
+	selectPlace(coordinates) {
+		if (this.map) {
+      this.map.render(coordinates);
+    } else {
+      this.map = new Map(coordinates);
+    }
+	}
 
   locateUserHandler() {
     // quit in case of browser fail to geolocate user
@@ -29,7 +38,7 @@ class PlaceFinder {
           lat: successResult.coords.latitude,
           lng: successResult.coords.longitude,
         };
-        console.log(coordinates);
+				this.selectPlace(coordinates);
       },
       (error) => {
         modal.hide();
