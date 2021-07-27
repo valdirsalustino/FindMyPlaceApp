@@ -11,10 +11,24 @@ class LoadedPlace {
 
 const url = new URL(location.href);
 const queryParameter = url.searchParams;
-const coords = {
-	lat: +queryParameter.get('lat'),
-	lng: +queryParameter.get('lng')
-};
 
-const address = queryParameter.get('address');
-new LoadedPlace(coords, address);
+// const coords = {
+// 	lat: +queryParameter.get('lat'),
+// 	lng: +queryParameter.get('lng')
+// };
+// const address = queryParameter.get('address');
+
+const locId = queryParameter.get('location');
+fetch("http://localhost:3000/location/" + locId)
+  .then((response) => {
+    if (response.status === 404) {
+      throw new Error("Could not find location!");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    new LoadedPlace(data.coordinates, data.address);
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
